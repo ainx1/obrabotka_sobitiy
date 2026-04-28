@@ -11,10 +11,12 @@ namespace obrabotka_sobitiy.Objects
         public float X;
         public float Y;
         public float Angle;
-
+    
         public BaseObject(float x, float y, float angle)
         {
-            /* ... */
+            X = x;
+            Y = y;
+            Angle = angle;
         }
         public Matrix GetTransform() { 
             var matrix = new Matrix(); 
