@@ -20,6 +20,7 @@ namespace obrabotka_sobitiy.Objects
         public override GraphicsPath GetGraphicsPath()
         {
             var path = base.GetGraphicsPath();
+            //в центре маркера самый маленький круг, который и будет определять его форму для пересечения
             path.AddEllipse(-3, -3, 6, 6);
             return path;
         }

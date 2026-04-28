@@ -12,6 +12,20 @@ namespace obrabotka_sobitiy
             InitializeComponent();
 
             player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
+
+            // добавляю реакцию на пересечение
+            player.OnOverlap += (p, obj) =>
+            {
+                txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
+            };
+
+            // добавил реакцию на пересечение с маркером
+            player.OnMarkerOverlap += (m) =>
+            {
+                objects.Remove(m);
+                marker = null;
+            };
+
             marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0);
 
             objects.Add(marker);
@@ -28,43 +42,59 @@ namespace obrabotka_sobitiy
 
             g.Clear(Color.White);
 
-            foreach (var obj in objects)
+            // objects на objects.ToList()
+            // это будет создавать копию списка
+            // и позволит модифицировать ориг objects прямо из цикла foreach
+
+            // пересчитываем пересечения
+            foreach (var obj in objects.ToList())
             {
                 if (obj != player && player.Overlaps(obj, g))
                 {
-                    // и если было вывожу информацию на форму
-                    txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
+                    player.Overlap(obj); // то есть игрок пересекся с объектом
+                    obj.Overlap(player); // и объект пересекся с игроком
                 }
+            }
+
+            // рендерим объекты
+            foreach (var obj in objects)
+            {
                 g.Transform = obj.GetTransform();
                 obj.Render(g);
             }
-            //var matrix = g.Transform;
-            //matrix.Translate(myRect.X, myRect.Y); // смещаем ее в пространстве
-            //matrix.Rotate(myRect.Angle);
-            //g.Transform = myRect.GetTransform(); // устанавливаем новую матрицу
-
-            //myRect.Render(g); // теперь так рисуем
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //вектор между игроком и маркером
-            float dx = marker.X - player.X;
-            float dy = marker.Y - player.Y;
+            // тут добавляем проверку на marker не нулевой
+            if (marker != null)
+            {
+                float dx = marker.X - player.X;
+                float dy = marker.Y - player.Y;
 
-            float length = MathF.Sqrt(dx * dx + dy * dy);
-            dx /= length; // нормализуем координаты
-            dy /= length; // нормализуем координаты
+                float length = MathF.Sqrt(dx * dx + dy * dy);
+                dx /= length;
+                dy /= length;
 
-            //пересчитываем координаты игрока
-            player.X += dx * 2; // 2 - это скорость
-            player.Y += dy * 2;
+                player.X += dx * 2;
+                player.Y += dy * 2;
+            }
 
-            pbMain.Invalidate(); // перерисовываем картинку
+            // запрашиваем обновление pbMain
+            // это вызовет метод pbMain_Paint по новой
+            pbMain.Invalidate();
         }
 
         private void pbMain_MouseClick(object sender, MouseEventArgs e)
         {
+            // тут добавил создание маркера по клику если он еще не создан
+            if (marker == null)
+            {
+                marker = new Marker(0, 0, 0);
+                objects.Add(marker); // и главное не забыть пололжить в objects
+            }
+
+            // а это так и остается
             marker.X = e.X;
             marker.Y = e.Y;
         }

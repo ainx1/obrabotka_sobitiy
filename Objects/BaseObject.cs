@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
 
 namespace obrabotka_sobitiy.Objects
 {
@@ -11,19 +12,22 @@ namespace obrabotka_sobitiy.Objects
         public float X;
         public float Y;
         public float Angle;
-    
+
+        // добавил поле делегат, к которому можно будет привязать реакцию на собыития
+        public Action<BaseObject, BaseObject> OnOverlap;
         public BaseObject(float x, float y, float angle)
         {
             X = x;
             Y = y;
             Angle = angle;
         }
-        public Matrix GetTransform() { 
-            var matrix = new Matrix(); 
+        public Matrix GetTransform()
+        {
+            var matrix = new Matrix();
             matrix.Translate(X, Y);
             matrix.Rotate(Angle);
             return matrix;
-        
+
         }
         // добавил виртуальный метод для отрисовки
         public virtual void Render(Graphics g)
@@ -55,5 +59,12 @@ namespace obrabotka_sobitiy.Objects
             return !region.IsEmpty(g); // если полученная форма не пуста то значит было пересечение
         }
 
+
+        public virtual void Overlap(BaseObject obj)
+        {
+            if (this.OnOverlap != null) // если к полю есть привязанные функции 
+                this.OnOverlap(this, obj); //то вызываем их
+        }
     }
+
 }
