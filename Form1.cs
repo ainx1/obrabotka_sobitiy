@@ -45,7 +45,7 @@ namespace obrabotka_sobitiy
             // objects на objects.ToList()
             // это будет создавать копию списка
             // и позволит модифицировать ориг objects прямо из цикла foreach
-
+            updatePlayer(); // сюда, теперь сначала вызываем пересчет игрока
             // пересчитываем пересечения
             foreach (var obj in objects.ToList())
             {
@@ -64,9 +64,8 @@ namespace obrabotka_sobitiy
             }
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void updatePlayer()
         {
-            // тут добавляем проверку на marker не нулевой
             if (marker != null)
             {
                 float dx = marker.X - player.X;
@@ -76,11 +75,30 @@ namespace obrabotka_sobitiy
                 dx /= length;
                 dy /= length;
 
-                player.X += dx * 2;
-                player.Y += dy * 2;
-            }
+                // по сути мы теперь используем вектор dx, dy
+                // как вектор ускорения, точнее даже вектор притяжения
+                // который притягивает игрока к маркеру
+                // 0.5 просто коэффициент который подобрал на глаз
+                // и который дает естественное ощущение движения
+                player.vX += dx * 0.5f;
+                player.vY += dy * 0.5f;
 
+                // расчитываем угол поворота игрока 
+                player.Angle = 90 - MathF.Atan2(player.vX, player.vY) * 180 / MathF.PI;
+            }
+            // тормозящий момент,
+            // нужен чтобы, когда игрок достигнет маркера произошло постепенное замедление
+            player.vX += -player.vX * 0.1f;
+            player.vY += -player.vY * 0.1f;
+
+            // пересчет позиция игрока с помощью вектора скорости
+            player.X += player.vX;
+            player.Y += player.vY;
             // запрашиваем обновление pbMain
+            // это вызовет метод pbMain_Paint по новой
+        }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
             // это вызовет метод pbMain_Paint по новой
             pbMain.Invalidate();
         }
