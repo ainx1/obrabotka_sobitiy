@@ -30,6 +30,11 @@ namespace obrabotka_sobitiy
 
             foreach (var obj in objects)
             {
+                if (obj != player && player.Overlaps(obj, g))
+                {
+                    // и если было вывожу информацию на форму
+                    txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
+                }
                 g.Transform = obj.GetTransform();
                 obj.Render(g);
             }
@@ -39,6 +44,29 @@ namespace obrabotka_sobitiy
             //g.Transform = myRect.GetTransform(); // устанавливаем новую матрицу
 
             //myRect.Render(g); // теперь так рисуем
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //вектор между игроком и маркером
+            float dx = marker.X - player.X;
+            float dy = marker.Y - player.Y;
+
+            float length = MathF.Sqrt(dx * dx + dy * dy);
+            dx /= length; // нормализуем координаты
+            dy /= length; // нормализуем координаты
+
+            //пересчитываем координаты игрока
+            player.X += dx * 2; // 2 - это скорость
+            player.Y += dy * 2;
+
+            pbMain.Invalidate(); // перерисовываем картинку
+        }
+
+        private void pbMain_MouseClick(object sender, MouseEventArgs e)
+        {
+            marker.X = e.X;
+            marker.Y = e.Y;
         }
     }
 }
