@@ -7,6 +7,10 @@ namespace obrabotka_sobitiy
         List<BaseObject> objects = new();
         Player player;
         Marker marker;
+
+        int score = 0;
+        Random rnd = new Random();
+
         public Form1()
         {
             InitializeComponent();
@@ -19,6 +23,22 @@ namespace obrabotka_sobitiy
                 txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
             };
 
+            player.OnOverlap += (p, obj) =>
+            {
+                // если объект зеленый круг (Goal)
+                if (obj is Goal g)
+                {
+                    
+                    g.X = rnd.Next(30, pbMain.Width - 30);
+                    g.Y = rnd.Next(30, pbMain.Height - 30);
+
+                    
+                    score++;
+                    
+                    lblScore.Text = $"Очки: {score}";
+                }
+            };
+
             // добавил реакцию на пересечение с маркером
             player.OnMarkerOverlap += (m) =>
             {
@@ -29,10 +49,10 @@ namespace obrabotka_sobitiy
             marker = new Marker(pbMain.Width / 2 + 50, pbMain.Height / 2 + 50, 0);
 
             objects.Add(marker);
-
             objects.Add(player);
-            objects.Add(new MyRectangle(50, 50, 0));
-            objects.Add(new MyRectangle(100, 100, 45));
+            
+            objects.Add(new Goal(rnd.Next(100, 400), rnd.Next(100, 300)));
+            objects.Add(new Goal(rnd.Next(100, 400), rnd.Next(100, 300)));
 
         }
 
@@ -62,6 +82,7 @@ namespace obrabotka_sobitiy
                 g.Transform = obj.GetTransform();
                 obj.Render(g);
             }
+                       
         }
 
         private void updatePlayer()
@@ -80,8 +101,8 @@ namespace obrabotka_sobitiy
                 // который притягивает игрока к маркеру
                 // 0.5 просто коэффициент который подобрал на глаз
                 // и который дает естественное ощущение движения
-                player.vX += dx * 0.5f;
-                player.vY += dy * 0.5f;
+                player.vX += dx * 0.75f;
+                player.vY += dy * 0.75f;
 
                 // расчитываем угол поворота игрока 
                 player.Angle = 90 - MathF.Atan2(player.vX, player.vY) * 180 / MathF.PI;
