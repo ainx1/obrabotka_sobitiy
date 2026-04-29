@@ -14,8 +14,7 @@ namespace obrabotka_sobitiy
         public Form1()
         {
             InitializeComponent();
-
-            player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
+             player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
 
             // добавляю реакцию на пересечение
             player.OnOverlap += (p, obj) =>
