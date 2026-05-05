@@ -8,7 +8,7 @@ namespace obrabotka_sobitiy.Objects
 {
     class Player : BaseObject
     {
-        public Action<Marker> OnMarkerOverlap;
+        public Action<Marker> OnMarkerOverlap; //делегатик для реакции на пересечение с маркером
 
         public float vX, vY;
         public Player(float x, float y, float angle) : base(x, y, angle)

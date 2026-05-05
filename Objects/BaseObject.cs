@@ -29,6 +29,10 @@ namespace obrabotka_sobitiy.Objects
             return matrix;
 
         }
+        public virtual void Update()
+        {
+            //задание3
+        }
         // добавил виртуальный метод для отрисовки
         public virtual void Render(Graphics g)
         {
