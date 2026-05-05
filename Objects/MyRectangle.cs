@@ -7,8 +7,11 @@ namespace obrabotka_sobitiy.Objects
 {
     class Goal : BaseObject // наследуем BaseObject
     {
-        public int Counter = 150; // Текущее значение счетчика
-        public Action<Goal> OnTimeout; // Событие конца отсчета
+        public float Size = 30; 
+        public Action<Goal> OnSizeZero; 
+
+        public int Counter = 100; 
+        public Action<Goal> OnTimeout; 
 
         // создаем конструктор с тем же набором параметров что и в BaseObject
         // base(x, y, angle) - вызывает конструктор родительского класса
@@ -19,22 +22,37 @@ namespace obrabotka_sobitiy.Objects
 
         public override void Update()
         {
-            Counter--; // Уменьшаем счетчик каждый такт
+            if (Size > 0)
+            {
+                Size -= 0.2f; 
+            }
+
+            Counter--; 
+
+            if (Size <= 0)
+            {
+                Size = 0; 
+                if (OnSizeZero != null)
+                {
+                    OnSizeZero(this); 
+                }
+            }
+
             if (Counter <= 0)
             {
-                Counter = 150; // Сбрасываем для следующего цикла
                 if (OnTimeout != null)
                 {
-                    OnTimeout(this); // Генерируем событие
+                    OnTimeout(this); 
                 }
             }
         }
 
         public override void Render(Graphics g)
             {
-                // Рисуем зеленый кружок
-                g.FillEllipse(new SolidBrush(Color.GreenYellow), -15, -15, 30, 30);
-                g.DrawEllipse(new Pen(Color.Black, 2), -15, -15, 30, 30);
+            // рисуем кружок, размер которого зависит от переменной Size
+            // -Size/2, чтобы центр круга оставался в точке X, Y
+            g.FillEllipse(new SolidBrush(Color.GreenYellow), -Size / 2, -Size / 2, Size, Size);
+            g.DrawEllipse(new Pen(Color.Black, 2), -Size / 2, -Size / 2, Size, Size);
 
             // Задание 3 Чтобы отрендерить текст надо написать как-то так
             g.DrawString(
@@ -48,7 +66,7 @@ namespace obrabotka_sobitiy.Objects
             public override GraphicsPath GetGraphicsPath()
             {
                 var path = base.GetGraphicsPath();
-                path.AddEllipse(-15, -15, 30, 30);
+                path.AddEllipse(-Size / 2, -Size / 2, Size, Size);
                 return path;
             }
         }

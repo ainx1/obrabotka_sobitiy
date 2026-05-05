@@ -30,7 +30,9 @@ namespace obrabotka_sobitiy
                     
                     g.X = rnd.Next(30, pbMain.Width - 30);
                     g.Y = rnd.Next(30, pbMain.Height - 30);
+
                     g.Counter = 100;
+                    g.Size = rnd.Next(20, 50);
                     score++;
                     
                     lblScore.Text = $"Очки: {score}";
@@ -49,18 +51,19 @@ namespace obrabotka_sobitiy
             objects.Add(marker);
             objects.Add(player);
 
-            //objects.Add(new Goal(rnd.Next(100, 400), rnd.Next(100, 300)));
-            //objects.Add(new Goal(rnd.Next(100, 400), rnd.Next(100, 300)));
-
             for (int i = 0; i < 2; i++)
             {
                 var goal = new Goal(rnd.Next(100, 400), rnd.Next(100, 300));
 
-                // Задание 3: Если время вышло, перемещаем объект
-                goal.OnTimeout += (g) => {
+                Action<Goal> resetGoal = (g) => {
                     g.X = rnd.Next(30, pbMain.Width - 30);
                     g.Y = rnd.Next(30, pbMain.Height - 30);
+                    g.Counter = 100; // сброс время
+                    g.Size = rnd.Next(20, 50); // сброс размер
                 };
+
+                goal.OnSizeZero += resetGoal;
+                goal.OnTimeout += resetGoal;
 
                 objects.Add(goal);
             }
