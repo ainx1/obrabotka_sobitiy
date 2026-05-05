@@ -83,7 +83,7 @@ namespace obrabotka_sobitiy
             // пересчитываем пересечения
             foreach (var obj in objects.ToList())
             {
-                
+                obj.Update(); 
                 if (obj != player && player.Overlaps(obj, g))
                 {
                     player.Overlap(obj); // то есть игрок пересекся с объектом
@@ -122,25 +122,19 @@ namespace obrabotka_sobitiy
                 // расчитываем угол поворота игрока 
                 player.Angle = 90 - MathF.Atan2(player.vX, player.vY) * 180 / MathF.PI;
             }
-            // тормозящий момент,
-            // нужен чтобы, когда игрок достигнет маркера произошло постепенное замедление
-            player.vX += -player.vX * 0.1f;
-            player.vY += -player.vY * 0.1f;
+            //// тормозящий момент,
+            //// нужен чтобы, когда игрок достигнет маркера произошло постепенное замедление
+            //player.vX += -player.vX * 0.1f;
+            //player.vY += -player.vY * 0.1f;
 
-            // пересчет позиция игрока с помощью вектора скорости
-            player.X += player.vX;
-            player.Y += player.vY;
-            // запрашиваем обновление pbMain
-            // это вызовет метод pbMain_Paint по новой
+            //// пересчет позиция игрока с помощью вектора скорости
+            //player.X += player.vX;
+            //player.Y += player.vY;
+            //// запрашиваем обновление pbMain
+            //// это вызовет метод pbMain_Paint по новой
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-            // =логика =зависит ТОЛЬКО от тиков таймера
-            foreach (var obj in objects.ToList())
-            {
-                obj.Update();
-            }
-
             // это вызовет метод pbMain_Paint по новой
             pbMain.Invalidate();
         }

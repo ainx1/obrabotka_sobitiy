@@ -33,6 +33,7 @@ namespace obrabotka_sobitiy.Objects
         {
             //задание3
         }
+
         // добавил виртуальный метод для отрисовки
         public virtual void Render(Graphics g)
         {
