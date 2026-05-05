@@ -14,28 +14,19 @@ namespace obrabotka_sobitiy
         public Form1()
         {
             InitializeComponent();
-             player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
+            player = new Player(pbMain.Width / 2, pbMain.Height / 2, 0);
 
             // добавляю реакцию на пересечение
             player.OnOverlap += (p, obj) =>
             {
                 txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
-            };
-
-            player.OnOverlap += (p, obj) =>
-            {
                 // если объект зеленый круг (Goal)
                 if (obj is Goal g)
                 {
-                    
-                    g.X = rnd.Next(30, pbMain.Width - 30);
-                    g.Y = rnd.Next(30, pbMain.Height - 30);
-
-                    g.Counter = 100;
-                    g.Size = rnd.Next(20, 50);
+                    objects.Remove(g);
                     score++;
-                    
                     lblScore.Text = $"Очки: {score}";
+                    CreateGoal();
                 }
             };
 
@@ -50,24 +41,23 @@ namespace obrabotka_sobitiy
 
             objects.Add(marker);
             objects.Add(player);
+            CreateGoal();
+            CreateGoal();
+        }
 
-            for (int i = 0; i < 2; i++)
-            {
-                var goal = new Goal(rnd.Next(100, 400), rnd.Next(100, 300));
+        private void CreateGoal()
+        {
+            var goal = new Goal(rnd.Next(30, pbMain.Width - 30), rnd.Next(30, pbMain.Height - 30));
+          
+            Action onDeath = () => {
+                objects.Remove(goal);
+                CreateGoal(); 
+            };
 
-                Action<Goal> resetGoal = (g) => {
-                    g.X = rnd.Next(30, pbMain.Width - 30);
-                    g.Y = rnd.Next(30, pbMain.Height - 30);
-                    g.Counter = 100; // сброс время
-                    g.Size = rnd.Next(20, 50); // сброс размер
-                };
+            goal.OnSizeZero += (g) => onDeath();
+            goal.OnTimeout += (g) => onDeath();
 
-                goal.OnSizeZero += resetGoal;
-                goal.OnTimeout += resetGoal;
-
-                objects.Add(goal);
-            }
-
+            objects.Add(goal);
         }
 
         private void pbMain_Paint(object sender, PaintEventArgs e)

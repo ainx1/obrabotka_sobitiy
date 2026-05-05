@@ -13,7 +13,6 @@ namespace obrabotka_sobitiy.Objects
         public Player(float x, float y, float angle) : base(x, y, angle)
         {
         }
-        //UPDATE НАДО ТУТ
 
         public override void Update()
         {

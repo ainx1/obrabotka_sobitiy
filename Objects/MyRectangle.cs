@@ -24,26 +24,20 @@ namespace obrabotka_sobitiy.Objects
         {
             if (Size > 0)
             {
-                Size -= 0.2f; 
+                Size -= 0.2f;
             }
 
-            Counter--; 
+            Counter--;
 
             if (Size <= 0)
             {
-                Size = 0; 
-                if (OnSizeZero != null)
-                {
-                    OnSizeZero(this); 
-                }
+                Size = 0;
+                OnSizeZero?.Invoke(this); // говорим форме об удалении
             }
 
             if (Counter <= 0)
             {
-                if (OnTimeout != null)
-                {
-                    OnTimeout(this); 
-                }
+                OnTimeout?.Invoke(this); // говорим форме об удалении
             }
         }
 
