@@ -45,17 +45,18 @@ namespace obrabotka_sobitiy
             CreateGoal();
         }
 
+        private void onDeath(Goal g)
+        {
+            objects.Remove(g);
+            CreateGoal();
+        }
+
         private void CreateGoal()
         {
             var goal = new Goal(rnd.Next(30, pbMain.Width - 30), rnd.Next(30, pbMain.Height - 30));
-          
-            Action onDeath = () => {
-                objects.Remove(goal);
-                CreateGoal(); 
-            };
 
-            goal.OnSizeZero += (g) => onDeath();
-            goal.OnTimeout += (g) => onDeath();
+            goal.OnSizeZero += onDeath;
+            goal.OnTimeout += onDeath;
 
             objects.Add(goal);
         }
@@ -104,8 +105,6 @@ namespace obrabotka_sobitiy
                 // по сути мы теперь используем вектор dx, dy
                 // как вектор ускорения, точнее даже вектор притяжения
                 // который притягивает игрока к маркеру
-                // 0.5 просто коэффициент который подобрал на глаз
-                // и который дает естественное ощущение движения
                 player.vX += dx * 0.75f;
                 player.vY += dy * 0.75f;
 

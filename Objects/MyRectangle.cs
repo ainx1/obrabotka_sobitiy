@@ -7,11 +7,11 @@ namespace obrabotka_sobitiy.Objects
 {
     class Goal : BaseObject // наследуем BaseObject
     {
-        public float Size = 30; 
-        public Action<Goal> OnSizeZero; 
+        public float Size = 25; 
+        public Action<Goal> OnSizeZero; //делехат
 
         public int Counter = 100; 
-        public Action<Goal> OnTimeout; 
+        public Action<Goal> OnTimeout; //делехат
 
         // создаем конструктор с тем же набором параметров что и в BaseObject
         // base(x, y, angle) - вызывает конструктор родительского класса
